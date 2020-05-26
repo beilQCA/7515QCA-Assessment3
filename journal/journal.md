@@ -599,10 +599,10 @@ void loop() {
   }
 }
 ```
-![Image](AppScreenShot1.JPG) 
-![Image](AppCode1.JPG) 
-![Image](AppCode2.JPG) 
-![Image](AppCode3.JPG) 
+![Image](AppInterfaceScreenshot.jpg) 
+![Image](AppCode1.jpg) 
+![Image](AppCode2.jpg) 
+![Image](AppCode3.jpg) 
 <!--- Include here screenshots of the final code you used in the project if it is done with block coding. If you have used javascript, micropython, C, or other code, include it as text formatted as code using a series of three backticks ` before and after the code block. See https://guides.github.com/features/mastering-markdown/ for more information about that formatting. --->
 
 
