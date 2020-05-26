@@ -120,10 +120,16 @@ This is a project that I will continue developing beyond this course, when globa
 ### Design 2 concept 2 ###
 *An interactive 3D POV globe.*
 
-### Final Design intent ###
+### Final design intent ###
 *A multi-purpose 3D POV globe display prototype with a phone app interface.*
 
 ### Final design concept ###
+
+*A small POV globe constructed with high-speed APA102 RGB LED strip and a host of features supported by a mobile phone app. The app will provide the user with a simple interface for interacting with the display in novel ways. While it will not be possible to materialise all proposed functionality within the timeframe, a subset of working features will present a proof of concept. The proposed features include display of textual information, display of images (including their downsampling) transfered from phone, display of video stream (again downsampled on the fly) as well as real-time interactive doodling canvas. This is a long-term proposal which will continue developing beyond the scope of this course.*
+
+## Process documentation ##
+<!--- In this section, include text and images (and potentially links to video) that represent the development of your project including sources you've found (URLs and written references), choices you've made, sketches you've done, iterations completed, materials you've investigated, and code samples. Use the markdown reference for help in formatting the material.--->
+
 Given the issues with moving forward with the original design intent/concept as noted above, I have switched direction to attempt this project which is potentially within the realms of possibility within the timeframe. 
 
 I've been toying with this idea for a few years now and will attempt to use this opportunity to build it. 
@@ -163,9 +169,6 @@ The next step will be to test the LED strip hooked up to the Pi and a 5V power s
 I have designed the support framework in SolidWorks with the intention of manufacturing in steel or combination steel and aluminium. A quote has been sought and the cost may determine if the project goes ahead or not.
 
 The quote to supply and form the steel as specified came in at nearly $400, thus have decided to manufacture it myself.
-
-## Process documentation ##
-<!--- In this section, include text and images (and potentially links to video) that represent the development of your project including sources you've found (URLs and written references), choices you've made, sketches you've done, iterations completed, materials you've investigated, and code samples. Use the markdown reference for help in formatting the material.--->
 
 A quick and dirty jig was created out of timber to test out the stepper motor, pulley and frame assembly - using an Arduino UNO board and a stepper motor shield. After testing all configurations of the stepper motor driver, it was determined not to be fast enough for this task. I have instead ordered a larger 12V 30W 3000 rpm DC motor which will be mounted on a 300mm x 300mm x 20mm steel plate which I purchased from a local steel supply company. It is a hefty piece which will give good anchorage to the construction. The new motor is a local order so should be arriving any day. I had not been successful getting quotes to build the support structures so have decided to do it myself. I'll be using a modular 20mm x 20mm anodised aluminium extrusion with cast aluminium brackets. I had thought about using a t-slot system, but my local supplier is awaiting shipment which has been delayed due to C-19. I'm stuck in limbo until the motor arrives as I need to find a mounting bracket for it - but should be clear sailing once it does.
 
@@ -284,19 +287,322 @@ Image of the phone app - still under development but at least operational for de
 * M4 self locking nuts - 4.0
 * 4mm x 1m threaded rod - 3.0
 * black abs housing box - 4.0
------------------------------------
-## ~ $330 ##
 
+### ~ $330 ###
 
-
-This should have quite a lot of information! It will likely include most of the process documentation from assessment 2 which can be copied and pasted here.
-
-Use subheadings to structure this code. See https://guides.github.com/features/mastering-markdown/ for details of how to insert subheadings.
-
-There will likely by a dozen or so images of the project under construction. The images should help explain why you've made the choices you've made as well as what you have done. --->
 
 ## Final code ##
 
+### Bluetooth Low Energy Motor Power Control Device Code ###
+
+``` 
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
+#include <BLE2902.h>
+
+#define SERVICE_UUID           "6E400001-B5A3-F393-E0A9-E50E24DCCA9E" // UART service UUID
+#define CHARACTERISTIC_UUID_RX "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
+#define CHARACTERISTIC_UUID_TX "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
+
+
+BLECharacteristic *pCharacteristic;
+bool deviceConnected = false;
+
+const int RELAY_PIN = 26;
+
+class MyServerCallbacks: public BLEServerCallbacks 
+{
+    void onConnect(BLEServer* pServer) 
+    {
+      deviceConnected = true;
+    };
+
+    void onDisconnect(BLEServer* pServer) 
+    {
+      deviceConnected = false;
+    }
+};
+
+class MyCallbacks: public BLECharacteristicCallbacks 
+{
+    void onWrite(BLECharacteristic *pCharacteristic) 
+    {
+      std::string rxValue = pCharacteristic->getValue();
+
+      if (rxValue.length() > 0) 
+      {
+        Serial.println("*********");
+        Serial.print("Received Value: ");
+
+        for (int i = 0; i < rxValue.length(); i++) 
+        {
+          Serial.print(rxValue[i]);
+        }
+        Serial.println();
+
+        if (rxValue.find("ON") != -1) 
+        { 
+          Serial.print("Turning ON!");
+          digitalWrite(RELAY_PIN, HIGH);
+        }
+        else if (rxValue.find("OFF") != -1) 
+        {
+          Serial.print("Turning OFF!");
+          digitalWrite(RELAY_PIN, LOW);
+        }
+      }
+    }
+};
+
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(RELAY_PIN, OUTPUT);
+ 
+  // Create the BLE Device
+  BLEDevice::init("POV Power"); // Give it a name
+
+  // Create the BLE Server
+  BLEServer *pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new MyServerCallbacks());
+
+  // Create the BLE Service
+  BLEService *pService = pServer->createService(SERVICE_UUID);
+
+  // Create a BLE Characteristic
+  pCharacteristic = pService->createCharacteristic(
+                      CHARACTERISTIC_UUID_TX,
+                      BLECharacteristic::PROPERTY_NOTIFY
+                    );
+                      
+  pCharacteristic->addDescriptor(new BLE2902());
+
+  BLECharacteristic *pCharacteristic = pService->createCharacteristic(
+                                         CHARACTERISTIC_UUID_RX,
+                                         BLECharacteristic::PROPERTY_WRITE
+                                       );
+
+  pCharacteristic->setCallbacks(new MyCallbacks());
+
+  // Start the service
+  pService->start();
+
+  // Start advertising
+  pServer->getAdvertising()->start();
+  Serial.println("Waiting a client connection to notify...");
+}
+
+void loop() {}
+```
+
+### POV Globe Bluetooth Classic Controller Device Code ###
+```
+/* Brendan Eilola - 20 May 2020
+  This is the code used to control the display ESP32 device on POV Globe from the smartphone app.
+  It uses Bluetooth Classic protocol to process larger data streams not achievable with BLE.
+  In the first instance, text is sent from the phone App and displayed in real-time on the globe.
+  It also processes a basic colour palette selectable from the app interface to apply to the text.
+  This will grow considerably as new features are added.
+*/
+
+#include "FastLED.h"
+#include "BluetoothSerial.h"
+
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
+
+BluetoothSerial SerialBT;
+
+const byte interruptPin = 22;
+
+int i;
+int m;
+int x;
+
+int wait = 5;
+int wait2 = 100;
+int OFFSET = 15;  //Vertical offset (margin from top)
+int characterCount = 0;
+String inputFragment;
+String textFragment;
+char chr;
+int isColour = 0;
+volatile int hall = 0;
+
+#define NUM_LEDS 46
+#define DATA_PIN 23
+#define CLOCK_PIN 18
+CRGB leds[NUM_LEDS];
+CRGB currentColour;
+
+// Basic character construct
+struct character_t
+{
+  char character;
+  bool characterBits[8][6];
+};
+
+// Limited alphabet used to map recieved text to LED displayable equivalents.
+struct character_t alphabet[] = {
+  ' ', {{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0}},
+  'A', {{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1}},
+  'B', {{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 1, 1, 1, 1}},
+  'C', {{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 1, 1, 1, 1}},
+  'D', {{0, 1, 1, 1, 1, 0},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 1, 1, 1, 0}},
+  'E', {{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 1, 1, 1, 1},{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 1, 1, 1, 1}},
+  'F', {{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0}},
+  'G', {{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 1, 1, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 1, 1, 1, 1}},
+  'H', {{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 1, 1, 1, 1},{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1}},
+  'I', {{0, 1, 1, 1, 1, 1},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 1, 1, 1, 1, 1}},
+  'J', {{0, 1, 1, 1, 1, 1},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 1, 1, 0, 0, 0}},
+  'K', {{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 1, 0},{0, 1, 0, 1, 0, 0},{0, 1, 1, 0, 0, 0},{0, 1, 1, 0, 0, 0},{0, 1, 0, 1, 0, 0},{0, 1, 0, 0, 1, 0},{0, 1, 0, 0, 0, 1}},
+  'L', {{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 1, 1, 1, 1}},
+  'M', {{0, 1, 0, 0, 0, 1},{0, 1, 1, 0, 1, 1},{0, 1, 0, 1, 0, 1},{0, 1, 0, 1, 0, 1},{0, 1, 0, 1, 0, 1},{0, 1, 0, 1, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1}},
+  'N', {{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 1, 0, 0, 1},{0, 1, 0, 1, 0, 1},{0, 1, 0, 0, 1, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1}},
+  'O', {{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 1, 1, 1, 1}},
+  'P', {{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0}},
+  'Q', {{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 1, 0, 1},{0, 1, 0, 0, 1, 1},{0, 1, 1, 1, 1, 1}},
+  'R', {{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 1, 1, 1, 1},{0, 1, 1, 0, 0, 0},{0, 1, 0, 1, 0, 0},{0, 1, 0, 0, 1, 0},{0, 1, 0, 0, 0, 1}},
+  'S', {{0, 1, 1, 1, 1, 1},{0, 1, 0, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 1, 1, 1, 1},{0, 0, 0, 0, 0, 1},{0, 0, 0, 0, 0, 1},{0, 0, 0, 0, 0, 1},{0, 1, 1, 1, 1, 1}},
+  'T', {{0, 1, 1, 1, 1, 1},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0}},
+  'U', {{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 1, 1, 1, 1}},
+  'V', {{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 0, 1, 0, 1, 0},{0, 0, 0, 1, 0, 0}},
+  'W', {{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 1, 0, 1},{0, 1, 1, 0, 1, 1},{0, 1, 0, 0, 0, 1}},
+  'Y', {{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 1, 0, 0, 0, 1},{0, 0, 1, 0, 1, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0}},
+  'Z', {{0, 1, 1, 1, 1, 1},{0, 0, 0, 0, 1, 0},{0, 0, 0, 1, 0, 0},{0, 0, 0, 1, 0, 0},{0, 0, 1, 0, 0, 0},{0, 0, 1, 0, 0, 0},{0, 1, 0, 0, 0, 0},{0, 1, 1, 1, 1, 1}}
+};
+
+// Efficient text translation lookup table to index into alphabet
+int map(char chr)
+{
+  String lookup = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  return lookup.indexOf(chr);
+}
+
+// Interrupt setup for dealing with Hall Sensor trigger
+portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
+
+void IRAM_ATTR handleInterrupt() 
+{
+  portENTER_CRITICAL_ISR(&mux);
+    hall = 1;
+  portEXIT_CRITICAL_ISR(&mux);
+}
+
+void setup() 
+{
+  FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR>(leds, NUM_LEDS);
+  Serial.begin(115200);
+
+  // Create Bluetooth Classic Device - this is used for text and larger file transmission not achievable with BLE.
+  SerialBT.begin("BT Device: POV Display"); //Bluetooth device name
+  Serial.println("The device started, now you can pair it with bluetooth!");
+    
+  pinMode(interruptPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(interruptPin), handleInterrupt, FALLING);
+
+  for (i = 0; i < NUM_LEDS; i++) 
+  {
+    leds[i] = CRGB::Black;
+    FastLED.show();
+  }  
+}
+
+void loop() {
+  
+  if (Serial.available()) 
+  {
+    SerialBT.write(Serial.read());
+  }
+  if (SerialBT.available()) 
+  {
+    inputFragment = SerialBT.readStringUntil('\0');
+    inputFragment.trim();
+    Serial.print("Input: ");
+    Serial.println(inputFragment);
+    Serial.print("characterCount: ");
+    Serial.println(characterCount);
+
+    if((inputFragment.indexOf("#BLUE") != -1)
+    or (inputFragment.indexOf("#RED") != -1)
+    or (inputFragment.indexOf("#GREEN") != -1)
+    or (inputFragment.indexOf("#YELLOW") != -1)
+    or (inputFragment.indexOf("#ORANGE") != -1)
+    or (inputFragment.indexOf("#MAGENTA") != -1)
+    or (inputFragment.indexOf("#PINK") != -1))
+    {    
+      isColour = 1;
+      Serial.print("This is a colour:");
+      Serial.println(inputFragment);
+    }
+    else
+    { 
+      textFragment = inputFragment; 
+      characterCount = characterCount + textFragment.length();
+ 
+      Serial.print("This is a text:");
+      Serial.println(textFragment);
+    }   
+
+    if (isColour == 1) 
+    {
+      // change colour received from the app
+      if (inputFragment.indexOf("#BLUE") != -1) 
+        currentColour = CRGB::Blue;
+      else if (inputFragment.indexOf("#RED") != -1) 
+        currentColour = CRGB::Red;
+      else if (inputFragment.indexOf("#GREEN") != -1) 
+        currentColour = CRGB::Green;
+      else if (inputFragment.indexOf("#YELLOW") != -1) 
+        currentColour = CRGB::Yellow;
+      else if (inputFragment.indexOf("#ORANGE") != -1) 
+        currentColour = CRGB::Orange;
+      else if (inputFragment.indexOf("#MAGENTA") != -1) 
+        currentColour = CRGB::Magenta;
+      else if (inputFragment.indexOf("#PINK") != -1) 
+        currentColour = CRGB::Pink;
+      else currentColour = CRGB::Black; 
+     }
+  }
+  if (hall > 0) 
+  {  //TODO: Find a way to wrap to next virtual line if current line boundary reached - easier said than done!
+    for (x = 0; x<textFragment.length(); x++)
+    {
+      chr = toupper(textFragment[x]);
+      //printf("\ncharacter %c ", alphabet[map(chr)].character);
+      for (m = 0; m < 6; m++) 
+      {
+        for (i = 0; i < 8; i++) 
+        {
+          if (alphabet[map(chr)].characterBits[i][m] == 1) 
+            leds[i + OFFSET] = currentColour;//CRGB::Red;          
+          else
+            leds[i + OFFSET] = CRGB::Black;
+          
+          //printf("%d", alphabet[map(chr)].characterBits[i][m]);     
+        }
+        FastLED.show();
+        delayMicroseconds(wait);
+      }      
+    }      
+
+    for (int i = 0; i < NUM_LEDS; i++) 
+    {
+      leds[i] = CRGB ::Black;
+    }
+    FastLED.show();
+    delayMicroseconds(wait2);
+
+    hall = 0;
+  }
+}
+```
+![Image](AppScreenShot1.JPG) 
+![Image](AppCode1.JPG) 
+![Image](AppCode2.JPG) 
+![Image](AppCode3.JPG) 
 <!--- Include here screenshots of the final code you used in the project if it is done with block coding. If you have used javascript, micropython, C, or other code, include it as text formatted as code using a series of three backticks ` before and after the code block. See https://guides.github.com/features/mastering-markdown/ for more information about that formatting. --->
 
 
@@ -311,5 +617,7 @@ There will likely by a dozen or so images of the project under construction. The
 What techniques, approaches, skills, or information did you find useful from other sources (such as the related projects you identified earlier)?
 
 What parts of your project do you feel are novel. This is IMPORTANT to help justify a key component of the assessment rubric.
+
+
 
 What might be an interesting extension of this project? In what other contexts might this project be used? --->
