@@ -1,23 +1,48 @@
-# 7515QCA Final project journal: *Insert your name here*
-
-<!--- As for other assessments, fill out the following journal sections with information relevant to your project. --->
-
-<!--- Markdown reference: https://guides.github.com/features/mastering-markdown/ --->
+# 7515QCA Final project journal: *Brendan Eilola*
 
 ## Related projects ##
 <!--- Find about 6 related projects to the project you choose. A project might be related through  function, technology, materials, fabrication, concept, or code. Don't forget to place an image of the related project in the appropriate folder and insert the filename in the appropriate places below. Copy the markdown block of code below for each project you are showing. --->
 
-### *Insert name of related project here* ###
+### *POV Globe 24bit True Color and Simple HW* ###
 
-<!--- Modify code to insert image of related project below --->
-![Image](missingimage.png)
+![RelatedProject1](RelatedProject1.jpg)
 
-<!--- Fill out name and link to related project in the code below. --->
-[Name of related project](https://[URL of related project])
+[POV Globe 24bit True Color and Simple HW (https://www.instructables.com/id/POV-Globe-24bit-True-Color-and-Simple-HW/)
 
-<!--- Include information about why this project is related to yours. --->
+This project provided the inspiration for the 3D printed rotor design as noted in the previous assessment item... the overal form is pretty much the same with some modification for my needs. Also, I used Solidworks to realise the STL file. Looking at this project now, I will spend some time to review how the code drivers were implemented - possibly providing further hints at how I might proceed with my project as I intend.
 
-<!--- Repeat code above for a total of 6 related projects --->
+### *Build a Persistence-of-Vision LED Globe* ###
+
+![RelatedProject2](RelatedProject2.jpg)
+
+[Build a Persistence-of-Vision LED Globe (https://makezine.com/projects/persistence-vision-led-globe/)
+
+This project was one that I decided was the antithesis of how I would approach development. While it employs an Arduino Nano, it is overly complex in circuitry employing multiple shift-registers and what seems to an example of over-engineering particularly for running single-colour LEDs. The POV Calculator tool that the author produced to create pixel-maps is interesting but again, over-engineered for its purpose... why go to the effort of developing software to import images for tracing when it could be done in software directly?!?
+
+### *How to Build Custom Android App for your Arduino Project using MIT App Inventor* ###
+
+![RelatedProject3](RelatedProject3.jpg)
+
+[How to Build Custom Android App for your Arduino Project using MIT App Inventor (https://howtomechatronics.com/tutorials/arduino/how-to-build-custom-android-app-for-your-arduino-project-using-mit-app-inventor/)
+
+This project provided some insight which led to my further investigating and subsequently employing MIT App Inventor to provide the rapid prototyping tool for developing the phone App that would interface with the project's microcontrollers.
+
+### *Wifi Enable POV with 1 meter 144 APA102 LED Strip* ###
+
+![RelatedProject4](RelatedProject4.jpg)
+
+[Wifi Enable POV with 1 meter 144 APA102 LED Strip (https://hackaday.io/project/18290-wifi-enable-pov-with-1-meter-144-apa102-led-strip/details)
+
+This was another 'out there' version which while impressive in its operation, lacked the finesse in its construction. This uses a strip in a 'propellor' fashion mounted on a very ugly stand... none of the physical construction appeals, but the software engineering is detailed and may provide some useful insight for future development.
+
+### *Make Your Own POV LED Globe* ###
+
+![RelatedProject5](RelatedProject5.jpg)
+
+[Make Your Own POV LED Globe] (https://www.instructables.com/id/Make-Your-Own-POV-LED-Globe/)
+
+The accompanying YouTube video for this project provided significant insight I was looking for in the physical construction of the device. I adopted a number of ideas including the use of heavy-gauge steel plate and mounting the DC motor to it. Also, the accompanying code example was used as a starting point for creating the character set idea. While this project's code is somewhat clumsy and lacking elegant succinct solutions, it was enough to spark an idea which I took further to create a full alphabet utilising a much more efficient lookup mapping of characters in a single loop construct.
+
 
 ## Other research ##
 <!--- Include here any other relevant research you have done. This might include identifying readings, tutorials, videos, technical documents, or other resources that have been helpful. For each particular source, add a comment or two about why it is relevant or what you have taken from it. You should include a reference or link to each of these resources. --->
