@@ -10,8 +10,9 @@
 
 The image should be inserted with code like that below where you replace the filename to exactly match what you uploaded. This will only work reliably if your filename has no spaces or unusual characters in it. The image must be in .jpg, .gif, .png format. Files of .heic or .heif type will not show up.
 --->
-
+<!---
 ![Image](missingimage.png)
+--->
 
 <!--- PROJECT DESCRIPTION: In a few sentences, describe what the project is and does, who it is for, and a typical use case. This should be suitable for a catalog, poster, or other display material about the project. --->
 
@@ -21,7 +22,7 @@ The image should be inserted with code like that below where you replace the fil
 
 <!--- PROJECT VIDEO: Provide a still image from your video and a link to the video below. In that code, replace `missingimage.png` with the still from your video and the URL of the video where indicated. If you link to a password protected video, you must include the password in the document you submit through Learning@Griffith. Failing to have a video that we can access might lead to significant reduction in marks, potentially as much as if the video has not been submitted at all. --->
 
-[![Image](VideoCover.JPG)](https://vimeo.com/422691962)
+![Image](VideoCover.JPG)(https://vimeo.com/422691962)
 
 ### Journal ###
 
