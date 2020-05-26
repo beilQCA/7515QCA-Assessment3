@@ -542,7 +542,7 @@ void loop() {
       textFragment = inputFragment; 
       characterCount = characterCount + textFragment.length();
  
-      Serial.print("This is a text:");
+      Serial.print("This is text:");
       Serial.println(textFragment);
     }   
 
@@ -599,6 +599,8 @@ void loop() {
   }
 }
 ```
+### POV Controller v1 (MIT App Inventor) Constructs ###
+
 ![Image](AppInterfaceScreenshot.jpg) 
 ![Image](AppCode1.jpg) 
 ![Image](AppCode2.jpg) 
