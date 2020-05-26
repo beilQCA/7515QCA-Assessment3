@@ -1,7 +1,6 @@
 # 7515QCA Final project journal: *Brendan Eilola*
 
 ## Related projects ##
-<!--- Find about 6 related projects to the project you choose. A project might be related through  function, technology, materials, fabrication, concept, or code. Don't forget to place an image of the related project in the appropriate folder and insert the filename in the appropriate places below. Copy the markdown block of code below for each project you are showing. --->
 
 ### *POV Globe 24bit True Color and Simple HW* ###
 
@@ -45,7 +44,32 @@ The accompanying YouTube video for this project provided significant insight I w
 
 
 ## Other research ##
-<!--- Include here any other relevant research you have done. This might include identifying readings, tutorials, videos, technical documents, or other resources that have been helpful. For each particular source, add a comment or two about why it is relevant or what you have taken from it. You should include a reference or link to each of these resources. --->
+
+Some useful resources used in the research for this project... including tangental ideas. This is not an exhaustive list but merely representative of the effort expended.
+
+https://github.com/hzeller/rpi-rgb-led-matrix/issues/322 - initial research looking at displaying of video on RGB LED displays.
+http://www.digital-led-strips.com/category/addressable-led-strip - sourcing the highest density addressable RGB LED strips available.
+https://lastminuteengineers.com/a4988-stepper-motor-driver-arduino-tutorial/ - investigating the use of stepper motor drivers.
+https://learn.adafruit.com/adafruit-dotstar-leds/python-circuitpython - reference material pertaining to APA102 RGB LED programming.
+https://itnext.io/using-a-raspberry-pi-to-control-leds-part-iii-react-native-app-29ee3f4afb8c - considering Bluetooth/MCU options.
+https://github.com/Polidea/react-native-ble-plx#configuration--installation - resource relating to Bluetooth LE and React Native.
+https://medium.com/@andrewlr/raspberry-pi-zero-w-setup-ab16f89d8120 - considering using Raspberry Pi Zero W as MCU.
+https://techtutorialsx.com/2017/09/30/esp32-arduino-external-interrupts/ - researching low-level hardware interrupts on ESP32 MCU's.
+https://learn.sparkfun.com/tutorials/apa102-addressable-led-hookup-guide/arduino-example - another APA102 programming resource.
+http://blog.pagefault-limited.co.uk/wemos-lolin32-pinout-vs-wemos-lolin32-lite-pinout - pinout schematic for WEMOS LOLIN32 MCU.
+https://github.com/ahettlin/PiLED - a branch of the FastLED library targeted for use on Raspberry Pi MCUs.
+https://www.pjrc.com/teensy/interrupts.html - investigating potential use of Teensy as MCU - looking at hardware interrupts.
+https://github.com/samguyer/FastLED - THE definitive FastLED branch that works with ESP32 et.al. MCU's. 
+https://github.com/espressif/arduino-esp32/blob/master/libraries/BluetoothSerial/examples/SerialToSerialBT/SerialToSerialBT.ino - example code addressing serial comms via Bluetooth using Arduino/C.
+https://github.com/espressif/arduino-esp32/issues/2055 - investigating issues pertaining to ESP32/Arduino and multiple simultaneous Bluetooth connections.
+https://community.appinventor.mit.edu/t/multiple-bluetooth-connection-in-one-screen/2058/6 - investigating multiple Bluetooth connections in MIT App Inventor.
+https://github.com/nkolban/esp32-snippets/blob/master/Documentation/BLE%20C%2B%2B%20Guide.pdf - guide to BluetoothLE and ESP32 MCU's
+https://www.element14.com/community/groups/exploringarduino/blog/2017/07/16/bluetooth-data-file-image-transfer-and-control-using-arduino - investigating the application of image transfer using Bluetooth/Arduino.
+https://www.arduino.cc/reference/en/ - definitive Arduino programming reference.
+https://community.appinventor.mit.edu/t/how-to-convert-image-to-string-base64-and-send-to-bluetooth-arduino/1906/6 - investigating the use of base64 image compression for potential use in file transfer between phone app and Arduino.
+https://www.deviceplus.com/arduino/jpeg-decoding-on-arduino-tutorial/ - research pertaining to JPEG decoding with Arduino.
+https://www.youtube.com/watch?v=mwXidmTDAfs - investigating potential ideas for simple real-time drawing interface.
+https://randomnerdtutorials.com/esp32-bluetooth-low-energy-ble-arduino-ide/ - researching BLE comms with ESP32 and Arduino IDE.
 
 ## Conceptual development ##
 
