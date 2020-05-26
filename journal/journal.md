@@ -73,10 +73,6 @@ https://randomnerdtutorials.com/esp32-bluetooth-low-energy-ble-arduino-ide/ - re
 
 ## Conceptual development ##
 
-### Design intent ###
-A 3D POV display that can play mpg files.
-
-### Design ideation ###
 ### Design intent 1 ###
 *A digital analogue clock with remote interface*
 
@@ -117,16 +113,19 @@ This is a project that I will continue developing beyond this course, when globa
 
 ### Design concept 3 ###
 *The clock uses side-lit fibre optic cable to illuminate time in a format analogous to an analogue clock. Clock is controlled using a smart phone App.*
-
-### Final Design intent ###
+ 
+### Design 2 concept 1 ###
 *A 3D POV display that can play mpg files.*
 
-### Final design concept ###
+### Design 2 concept 2 ###
+*An interactive 3D POV globe.*
 
+### Final Design intent ###
+*A multi-purpose 3D POV globe display prototype with a phone app interface.*
+
+### Final design concept ###
 Given the issues with moving forward with the original design intent/concept as noted above, I have switched direction to attempt this project which is potentially within the realms of possibility within the timeframe. 
-<!--- Document your ideation process. This will include the design concepts presented for assessment 2. You can copy and paste that information here. --->
 
-### Final design concept ###
 I've been toying with this idea for a few years now and will attempt to use this opportunity to build it. 
 
 Once more I've had to compromise on the design to address the current challenges with fabrication. Specifically, the original idea was to 3D print a LARGE (300mm) circular frame which would house the electronics and LED's... unfortunately, the machines available to us limits this to a maximum diameter of 215mm. This will be adequate for prototyping it for this class but not what I would like to achieve ultimately; since I envisage using this to display my moving-image productions in a gallery setting. The limiting factor is the size of the circular frame and the density of pixels (LEDs) housed on its circumference. The more dense the pixels, the greater the display resolution.
