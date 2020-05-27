@@ -618,8 +618,13 @@ My process typically follows an iterative development cycle aligned with the Agi
 
 What techniques, approaches, skills, or information did you find useful from other sources (such as the related projects you identified earlier)?
 
+The referent projects provided necessary key insights for establishing a baseline product; gleaning ideas for tried and tested construction methods helped to create a hybrid framework from which the novel ideas could extend. Many more references were used to research and develop ideas as they came to mind. I spent considerable time chasing an idea and seeking solutions to problems as they arose; some of which being put on the backburner or relinquished due to complexity or some other constraints.
+
+I found the MIT App Inventor to be an invaluable tool for rapid prototyping the phone app/arduino-esque interface - having been introduced to the Micro:Bit development ecosystem earlier in the course, this proved a comfortable extension of the familiar drag-n-drop block coding style, and a fun departure from what would otherwise be an overwhelming prospect going the route of traditional code development methodologies.
+
 What parts of your project do you feel are novel. This is IMPORTANT to help justify a key component of the assessment rubric.
 
+There are many types of POV systems out there, and while only a handful were referenced for this project I believe that the intent, and conceptual ideation with what has been proposed and presented, sufficiently categorises aspects of it as novel. In particular, the development of a contemporary human/computer interface (Mobile phone App) that leverages a number of cutting edge technologies such as Bluetooth Classic and Low Energy variants to create a responsive and easy to use system. Other areas that sets this project apart are the real-time functionality that empowers the user to affect changes to the system through the multipurposing of the device to present textual, image, moving image and graphic media and multi-media displays. Further, the system can be extended with addon peripherals including camera's, sensors and audio modules.
 
 
 What might be an interesting extension of this project? In what other contexts might this project be used? --->
