@@ -610,7 +610,7 @@ void loop() {
 
 ## Design process discussion ##
 <!--- Discuss your process used in this project, particularly with reference to aspects of the Double Diamond design methodology or other relevant design process. --->
-
+My process typically follows an iterative development cycle aligned with the Agile methodology which is suited to rapid prototype development. This differs significantly from more traditional models such as the waterfall which is overly restrictive and regimented using a very specific path through the project lifecycle and does not respond well to requirement shifts or spontaneous development. Agile treats all areas of the project as parallel processes that iterate rapidly throughout the project's life, with the focus on rapidly responding to dynamic shifting requirements and their solutions.
 
 ## Reflection ##
 
